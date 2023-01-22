@@ -11,8 +11,6 @@ const Main = () => {
   const [createUserMutation] = useMutation(CREATE_USER);
   const { loading, data } = useQuery(READ_ALL_USER);
 
-  console.log(createUserMutation);
-
   const inputProps = {
     nameUseInput: useInput('이름'),
     emailUseInput: useInput('이메일'),

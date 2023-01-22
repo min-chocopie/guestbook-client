@@ -1,11 +1,13 @@
 import { AddButtonViewer } from "./style/StButton"
 
 
-export const onAdd = (inputProps, createUserMutation) => {
+export const onAdd = async (inputProps, createUserMutation) => {
   const name = inputProps.nameUseInput.value;
   const email = inputProps.emailUseInput.value;
 
-  createUserMutation({ variables: { name: name, email: email }});
+  await createUserMutation({ variables: { name: name, email: email }});
+
+  window.location.reload();
 }
 
 export const AddButton = ({ onClick }) => {
