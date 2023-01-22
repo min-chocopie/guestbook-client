@@ -28,7 +28,7 @@ const Main = () => {
         <Input type='email' {...inputProps.emailUseInput} />
         <AddButton onClick={onAddClick} />
       </AddUserViewer>
-      {data.readAllUser.map((user) => (
+      {data && data.readAllUser.map((user) => (
         <div key={user.id}>이름: {user.name} 이메일: {user.email}</div>
       ))}
     </Viewer>
