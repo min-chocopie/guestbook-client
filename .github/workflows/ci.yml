@@ -6,10 +6,15 @@ on:
     
 env:
   AWS_REGION: ap-northeast-2
+  ECR_REPOSITORY: simple-client
   
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    outputs:
+      image: ${{ steps.push-image.outputs.image }}
+      tag: ${{ steps.push-image.outputs.tag }}
 
     steps:
     - name: Checkout
@@ -27,14 +32,15 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v1
 
     - name: Docker Image Build and Push to Amazon ECR
+      id: push-image
       env:
-        ECR_REPOSITORY: simple-client
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+        docker build -t ${{ env.ECR_REGISTRY }}/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push ${{ env.ECR_REGISTRY }}/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "image=${{ env.ECR_REGISTRY }}/$ECR_REPOSITORY" >> $GITHUB_OUTPUT
+        echo "tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
         
   deploy:
     needs: build
@@ -55,7 +61,7 @@ jobs:
     - name: Update Kubernetes resources
       run: |
         cd cd-simple-client/overlays/dev
-        kustomize edit set image ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+        kustomize edit set image ${{ needs.build.outputs.image }}=${{ needs.build.outputs.image }}:${{ needs.build.outputs.tag }}
       
     - name: Commit files
       run: |
