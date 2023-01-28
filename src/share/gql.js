@@ -1,18 +1,32 @@
 import { gql } from '@apollo/client';
 
 
-export const CREATE_USER = gql`
-  mutation CreateUser($name: String!, $email: String!) {
-    createUser(name: $name, email: $email)
+export const CREATE_LOG = gql`
+  mutation CreateLog($name: String!, $password: String!, $comment: String!) {
+    createLog(name: $name, password: $password, comment: $comment) {
+      id
+      name
+      comment
+      createdAt
+      updatedAt
+    }
   }
 `
 
-export const READ_ALL_USER = gql`
-  query ReadAllUser {
-    readAllUser {
-      id,
-      name,
-      email
+export const DELETE_LOG = gql`
+  mutation DeleteLog($deleteLogId: String!, $password: String!) {
+    deleteLog(id: $deleteLogId, password: $password)
+  }
+`
+
+export const READ_ALL_LOG = gql`
+  query ReadAllLog {
+    readAllLog {  
+      id
+      name
+      comment
+      createdAt
+      updatedAt
     }
   }
 `
