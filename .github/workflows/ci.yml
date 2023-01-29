@@ -58,7 +58,7 @@ jobs:
         IMAGE: 767791266862.dkr.ecr.ap-northeast-2.amazonaws.com/simple-client
       run: |
         cd cd-simple-client/overlays/dev
-        kustomize edit set image ${{ env.IMAGE }}=${{ env.IMAGE }}:${{ needs.build.outputs.tag }}
+        kustomize edit set image ${{ env.IMAGE }}=${{ env.IMAGE }}:${{ github.sha }}
       
     - name: Commit files
       run: |
