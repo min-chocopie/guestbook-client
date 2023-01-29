@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      registry: ${{ steps.push-image.outputs.registry }}
+#       registry: ${{ steps.push-image.outputs.registry }}
       tag: ${{ steps.push-image.outputs.tag }}
 
     steps:
@@ -37,9 +37,9 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        #docker build -t ${{ env.ECR_REGISTRY }}/$ECR_REPOSITORY:$IMAGE_TAG .
-        #docker push ${{ env.ECR_REGISTRY }}/$ECR_REPOSITORY:$IMAGE_TAG
-        echo "registry=$ECR_REGISTRY" >> $GITHUB_OUTPUT
+        docker build -t ${{ env.ECR_REGISTRY }}/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push ${{ env.ECR_REGISTRY }}/$ECR_REPOSITORY:$IMAGE_TAG        
+        #echo "registry=$ECR_REGISTRY" >> $GITHUB_OUTPUT
         echo "tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
         
   deploy:
@@ -47,28 +47,29 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - run: echo ${{ needs.build.output.registry }}/$ECR_REPOSITORY=${{ needs.build.output.registry }}/$ECR_REPOSITORY:${{ needs.build.outputs.tag }}
-      
-#     - name: Setup Kustomize
-#       uses: imranismail/setup-kustomize@v2.0.0
+ 
+    - name: Setup Kustomize
+      uses: imranismail/setup-kustomize@v2.0.0
         
-#     - name: Checkout kustomize repository
-#       uses: actions/checkout@v3
-#       with:
-#         repository: min-chocopie/cd-simple-client
-#         ref: main
-#         token: ${{ secrets.ACTION_TOKEN }}
-#         path: cd-simple-client
+    - name: Checkout kustomize repository
+      uses: actions/checkout@v3
+      with:
+        repository: min-chocopie/cd-simple-client
+        ref: main
+        token: ${{ secrets.ACTION_TOKEN }}
+        path: cd-simple-client
       
-#     - name: Update Kubernetes resources
-#       run: |
-#         cd cd-simple-client/overlays/dev
-#         kustomize edit set image ${{ needs.build.outputs.image }}=${{ needs.build.outputs.image }}:${{ needs.build.outputs.tag }}
+    - name: Update Kubernetes resources
+      env: 
+        IMAGE: 767791266862.dkr.ecr.ap-northeast-2.amazonaws.com/simple-client
+      run: |
+        cd cd-simple-client/overlays/dev
+        kustomize edit set image ${{ env.IMAGE }}:${{ env.IMAGE }}:${{ needs.build.outputs.tag }}
       
-#     - name: Commit files
-#       run: |
-#         cd cd-simple-client
-#         git config --global user.email "github-actions@github.com"
-#         git config --global user.name "github-actions"
-#         git commit -am "Update image tag"
-#         git push -u origin main
+    - name: Commit files
+      run: |
+        cd cd-simple-client
+        git config --global user.email "github-actions@github.com"
+        git config --global user.name "github-actions"
+        git commit -am "Update image tag"
+        git push -u origin main
