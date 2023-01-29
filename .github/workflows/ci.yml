@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      image: ${{ steps.push-image.outputs.image }}
+      registry: ${{ steps.push-image.outputs.registry }}
       tag: ${{ steps.push-image.outputs.tag }}
 
     steps:
@@ -39,7 +39,7 @@ jobs:
       run: |
         #docker build -t ${{ env.ECR_REGISTRY }}/$ECR_REPOSITORY:$IMAGE_TAG .
         #docker push ${{ env.ECR_REGISTRY }}/$ECR_REPOSITORY:$IMAGE_TAG
-        echo "image=${{ env.ECR_REGISTRY }}/$ECR_REPOSITORY" >> $GITHUB_OUTPUT
+        echo "registry=$ECR_REGISTRY" >> $GITHUB_OUTPUT
         echo "tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
         
   deploy:
@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - run: echo ${{ needs.build.outputs.image }}=${{ needs.build.outputs.image }}:${{ needs.build.outputs.tag }}
+      - run: echo ${{ needs.build.output.registry }}/$ECR_REPOSITORY=${{ needs.build.output.registry }}/$ECR_REPOSITORY:${{ needs.build.outputs.tag }}
       
 #     - name: Setup Kustomize
 #       uses: imranismail/setup-kustomize@v2.0.0
