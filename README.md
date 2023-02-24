@@ -1,4 +1,4 @@
 ### CD Repository
-https://github.com/min-chocopie/cd-simple-client
+https://github.com/min-chocopie/cd-guestbook-client
 ### Server Repository
-https://github.com/min-chocopie/simple-server
+https://github.com/min-chocopie/gutestbook-server
