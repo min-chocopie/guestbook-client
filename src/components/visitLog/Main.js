@@ -23,7 +23,7 @@ const Main = () => {
     onAddButton(inputProps, createLogMutation);
   }
 
-  if (loading) return <></>;
+  if (loading) return <p>Loading...</p>
   return (
     <Viewer>
       <FormViewer>
