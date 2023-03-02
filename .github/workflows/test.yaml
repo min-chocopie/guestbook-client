@@ -1,7 +1,7 @@
 name: React Test
 
 on:
-  pr:
+  pull_request:
     branches: ["main"]
 
 jobs:
