@@ -7,7 +7,7 @@ import VisitLog from '../components/visitLog/Main';
 import { READ_ALL_LOG, CREATE_LOG } from '../share/gql';
 
 
-
+// test code 
 it("should render loading and visig log", async () => {
   const readMock = { 
     request: {
